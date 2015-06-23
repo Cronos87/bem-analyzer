@@ -12,6 +12,7 @@ except ImportError:
     exit()
 
 def analyze(data):
+    """Parse and return DOM elements with BEM errors."""
     url = urlparse(data)
 
     if url.scheme != "" and url.netloc != "":
