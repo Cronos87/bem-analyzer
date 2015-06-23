@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import urllib.request
+from urllib.parse import urlparse
 import re
 import sys
 
@@ -10,47 +11,57 @@ except ImportError:
     print("Please install BeautifulSoup4. See: https://pypi.python.org/pypi/beautifulsoup4")
     exit()
 
-try:
-    url = sys.argv[1]
-except IndexError:
-    print("Please enter an url as argument.")
-    exit()
+def analyze(data):
+    url = urlparse(data)
 
-data = urllib.request.urlopen(url).read()
+    if url.scheme != "" and url.netloc != "":
+        data = urllib.request.urlopen(url.geturl()).read()
 
-soup = BeautifulSoup(data)
+    soup = BeautifulSoup(data)
+    bem_classes = soup.find_all(class_=re.compile("__|--"))
+    items_error = []
 
-bem_classes = soup.find_all(class_=re.compile("__|--"))
+    for bem_class in bem_classes:
+        classes = bem_class["class"]
 
-nb_error = 0
+        for item in classes:
+            if "--" in item:
+                block, modifier = item.split("--")
 
+                if block not in classes:
+                    items_error.append({"type": "modifier", "name": item, "element": bem_class})
 
-def error(label):
-    """Display error label and incremente error counter."""
-    global nb_error
+            if "__" in item:
+                if item.count("__") > 1:
+                    items_error.append({"type": "element", "name": item, "element": bem_class})
 
-    print(label)
-    nb_error = nb_error + 1
+                block = item.split("__", 1)[0]
+                parent = bem_class.find_parents(class_=block)
 
-for bem_class in bem_classes:
-    classes = bem_class["class"]
+                if len(parent) == 0:
+                    items_error.append({"type": "block", "name": item, "element": bem_class})
 
-    for item in classes:
-        if "--" in item:
-            block, modifier = item.split("--")
+    return items_error
 
-            if block not in classes:
-                error("Modifier found without its element: %s" % item)
+def main():
+    try:
+        url = sys.argv[1]
+    except IndexError:
+        print("Please enter an url as argument.")
+        exit()
 
-        if "__" in item:
-            if item.count("__") > 1:
-                error("Multiple element found: %s" % item)
+    items = analyze(url)
 
-            block = item.split("__", 1)[0]
-            parent = bem_class.find_parents(class_=block)
+    if len(items) > 0:
+        for item in items:
+            if item["type"] == "block":
+                print("Element found without a block: %s" % item["name"])
+            elif item["type"] == "element":
+                print("Multiple element found: %s" % item["name"])
+            elif item["type"] == "modifier":
+                print("Modifier found without its element: %s" % item["name"])
 
-            if len(parent) == 0:
-                error("Element found without a block: %s" % item)
+        print("%d errors found!" % len(items))
 
-if nb_error > 0:
-    print("%d errors found!" % nb_error)
+if __name__ == '__main__':
+    main()
