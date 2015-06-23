@@ -2,6 +2,10 @@
 
 A simple script that parse a website and analyse BEM usage.
 
+## Dependency
+
+BeautifulSoup4 - See https://pypi.python.org/pypi/beautifulsoup4
+
 ## Launch script from terminal
 
 ```bash
