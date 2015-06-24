@@ -38,4 +38,6 @@ Example:
 
 ## Compatibility
 
-At the moment, the script is only compatible with Python 3. The support for Python 2 will arrive.
+Python 2 and Python 3.
+
+Tested with versions 2.7.6 and 3.4.3.
