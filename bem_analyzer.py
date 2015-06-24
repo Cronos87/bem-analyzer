@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 
-import urllib.request
-from urllib.parse import urlparse
+try:
+    from urllib.request import urlopen
+    from urllib.parse import urlparse
+except ImportError:
+    from urllib2 import urlopen
+    from urlparse import urlparse
+
 import re
 import sys
 
@@ -16,7 +21,7 @@ def analyze(data):
     url = urlparse(data)
 
     if url.scheme != "" and url.netloc != "":
-        data = urllib.request.urlopen(url.geturl()).read()
+        data = urlopen(url.geturl()).read()
 
     soup = BeautifulSoup(data)
     bem_classes = soup.find_all(class_=re.compile("__|--"))

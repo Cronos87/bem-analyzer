@@ -1,5 +1,5 @@
 import unittest
-from bem_syntax_analyzer import analyze
+from bem_analyzer import analyze
 
 class TestBEMAnalyzerMethods(unittest.TestCase):
 
