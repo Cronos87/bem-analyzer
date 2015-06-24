@@ -16,6 +16,7 @@ except ImportError:
     print("Please install BeautifulSoup4. See: https://pypi.python.org/pypi/beautifulsoup4")
     exit()
 
+
 def analyze(data):
     """Parse and return DOM elements with BEM errors."""
     url = urlparse(data)
