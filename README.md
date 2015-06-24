@@ -9,7 +9,7 @@ BeautifulSoup4 - See https://pypi.python.org/pypi/beautifulsoup4
 ## Launch script from terminal
 
 ```bash
-python bem_syntax_analyzer.py http://www.site.com
+python bem_analyzer.py http://www.site.com
 ```
 
 This command will print something like this:
