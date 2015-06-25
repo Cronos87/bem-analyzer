@@ -33,7 +33,10 @@ def analyze(data):
 
         for item in classes:
             if "--" in item:
-                block, modifier = item.split("--")
+                if item.count("--") > 1:
+                    items_error.append({"type": "modifier-double", "name": item, "element": bem_class})
+
+                block, modifier = item.split("--", 1)
 
                 if block not in classes:
                     items_error.append({"type": "modifier", "name": item, "element": bem_class})
@@ -67,6 +70,8 @@ def main():
                 print("Multiple element found: %s" % item["name"])
             elif item["type"] == "modifier":
                 print("Modifier found without its element: %s" % item["name"])
+            elif item["type"] == "modifier-double":
+                print("Multiple modifier found: %s" % item["name"])
 
         print("%d errors found!" % len(items))
 
