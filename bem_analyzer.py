@@ -1,12 +1,5 @@
 #!/usr/bin/env python
 
-try:
-    from urllib.request import urlopen
-    from urllib.parse import urlparse
-except ImportError:
-    from urllib2 import urlopen
-    from urlparse import urlparse
-
 import re
 import sys
 
@@ -19,11 +12,6 @@ except ImportError:
 
 def analyze(data):
     """Parse and return DOM elements with BEM errors."""
-    url = urlparse(data)
-
-    if url.scheme != "" and url.netloc != "":
-        data = urlopen(url.geturl()).read()
-
     soup = BeautifulSoup(data)
     bem_classes = soup.find_all(class_=re.compile("__|--"))
     items_error = []
