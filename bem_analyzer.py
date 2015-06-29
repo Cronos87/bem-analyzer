@@ -1,5 +1,12 @@
 #!/usr/bin/env python
 
+try:
+    from urllib.request import urlopen
+    from urllib.parse import urlparse
+except ImportError:
+    from urllib2 import urlopen
+    from urlparse import urlparse
+
 import re
 import sys
 
@@ -48,7 +55,13 @@ def main():
         print("Please enter an url as argument.")
         exit()
 
-    items = analyze(url)
+    try:
+        data = urlopen(url).read()
+    except:
+        print("Please enter a correct url.")
+        exit()
+
+    items = analyze(data)
 
     if len(items) > 0:
         for item in items:
